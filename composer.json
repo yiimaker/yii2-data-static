@@ -1,0 +1,22 @@
+{
+    "name": "yiimaker/yii2-data-static",
+    "description": "Yii2 Static Data",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","static data"],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Ruslan Saiko",
+            "email": "ruslan.saiko.dev@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "yiimaker/yii2-static-data": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "ymaker\\data\\statics\\": ""
+        }
+    }
+}
