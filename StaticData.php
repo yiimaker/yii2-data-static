@@ -12,7 +12,19 @@ use ymaker\configuration\Configuration;
  */
 class StaticData extends Model
 {
+    /**
+     * @param array $config
+     * @return StaticData
+     */
+    public static function getInstance($config = [])
+    {
+        $class = get_called_class();
 
+        /** @var StaticData $instance */
+        $instance = new $class($config);\Yii::createObject($class, $config);
+        $instance->loadAttributes(false);
+        return $instance;
+    }
     /**
      * @var string|array
      */
