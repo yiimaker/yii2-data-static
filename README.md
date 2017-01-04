@@ -25,7 +25,8 @@ to the require section of your `composer.json` file.
 
 Usage
 -----
-You need to inherit the class `ymaker\data\statics\StaticData`, then describe it as a normal model.
+1. Configure component `yiimaker/yii2-configuration` in config file or in `StaticData` class. [More information](https://github.com/yiimaker/yii2-configuration#configuration)
+2. Inherit the class `ymaker\data\statics\StaticData`, then describe it as a normal model.
 
 Example
 -------
@@ -49,7 +50,7 @@ class AboutUs extends ymaker\data\statics\StaticData
 ```php
 $aboutUs = new AboutUs();
 ```
-####Save Data
+#### Save Data
 
 ```php
 $aboutUs->phone = '+111111111111';
@@ -57,14 +58,19 @@ $aboutUs->email = 'test@example.com';
 $aboutUs->save();
 ```
 
-####Load Data
+#### Load Data
 
 ```php
 $aboutUs->loadAttributes();
 echo $aboutUs->email; // 'test@example.com';
 ```
+or
 
-####Reload Data
+```php
+$aboutUs = AboutUs::getInstance();
+```
+
+#### Reload Data
 
 ```php
 $aboutUs->loadAttributes();
