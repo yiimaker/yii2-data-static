@@ -11,13 +11,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```bash
-php composer.phar require --prefer-dist yiimaker/yii2-static-data "*"
+php composer.phar require --prefer-dist yiimaker/yii2-data-static "*"
 ```
 
 or add
 
 ``` json
-"yiimaker/yii2-static-data": "*"
+"yiimaker/yii2-data-static": "*"
 ```
 
 to the require section of your `composer.json` file.
