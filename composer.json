@@ -12,7 +12,7 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
-        "yiimaker/yii2-configuration": "*"
+        "yiimaker/yii2-configuration": "^1.0.0"
     },
     "autoload": {
         "psr-4": {

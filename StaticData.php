@@ -99,12 +99,16 @@ class StaticData extends Model
         /** @var Configuration $config */
         $config = $this->getConfiguration();
         $attributes = $this->getAttributes();
-
+        $isSave = true;
         foreach ($attributes as $key => $value) {
-            $config->set($this->getAttributeName($key), $value);
+            if ($config->set($this->getAttributeName($key), $value)) {
+                $this->addError($key, 'Something went wrong. More details in the logs.');
+                $isSave = false;
+            }
+
         }
         $this->afterSave();
-        return true;
+        return $isSave;
     }
 
     protected function getName()
