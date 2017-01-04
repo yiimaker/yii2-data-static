@@ -16,7 +16,7 @@ php composer.phar require --prefer-dist yiimaker/yii2-static-data "*"
 
 or add
 
-```
+``` json
 "yiimaker/yii2-static-data": "*"
 ```
 
