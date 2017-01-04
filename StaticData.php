@@ -2,6 +2,7 @@
 
 namespace ymaker\data\statics;
 
+use yii\base\Event;
 use yii\base\Model;
 use yii\di\Instance;
 use ymaker\configuration\Configuration;
@@ -12,6 +13,9 @@ use ymaker\configuration\Configuration;
  */
 class StaticData extends Model
 {
+    const EVENT_BEFORE_SAVE = 'beforeSave';
+    const EVENT_AFTER_SAVE = 'afterSave';
+
     /**
      * @param array $config
      * @return StaticData
@@ -21,10 +25,11 @@ class StaticData extends Model
         $class = get_called_class();
 
         /** @var StaticData $instance */
-        $instance = new $class($config);\Yii::createObject($class, $config);
+        $instance = \Yii::createObject($class, $config);
         $instance->loadAttributes(false);
         return $instance;
     }
+
     /**
      * @var string|array
      */
@@ -81,12 +86,13 @@ class StaticData extends Model
         $this->loadAttributes(false);
     }
 
+
     /**
      * @return bool
      */
     public function save()
     {
-
+        $this->beforeSave();
         if (!$this->validate()) {
             return false;
         }
@@ -97,7 +103,7 @@ class StaticData extends Model
         foreach ($attributes as $key => $value) {
             $config->set($this->getAttributeName($key), $value);
         }
-
+        $this->afterSave();
         return true;
     }
 
@@ -111,5 +117,15 @@ class StaticData extends Model
     {
         $name = $this->getName();
         return $name . ucfirst($attribute);
+    }
+
+    protected function beforeSave()
+    {
+        $this->trigger(self::EVENT_BEFORE_SAVE, new Event());
+    }
+
+    protected function afterSave()
+    {
+        $this->trigger(self::EVENT_AFTER_SAVE, new Event());
     }
 }
