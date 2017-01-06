@@ -22,57 +22,52 @@ class StaticData extends Model
      */
     public static function getInstance($config = [])
     {
-        $class = get_called_class();
+        $config['class'] = get_called_class();
 
         /** @var StaticData $instance */
-        $instance = \Yii::createObject($class, $config);
+        $instance = \Yii::createObject($config);
+
         $instance->loadAttributes(false);
+
         return $instance;
     }
 
     /**
-     * @var string|array
-     */
-    private $configuration = 'config';
-
-    /**
-     * @return array|string
+     * @return array|string|object
      */
     public function getConfiguration()
     {
-        return $this->configuration;
+        return 'config';
     }
 
     /**
-     * @inheritdoc
+     * @return array|object|string
      */
-    public function init()
+    protected function configurationInit()
     {
-        parent::init();
         $config = $this->getConfiguration();
         if (is_array($config)) {
-            $this->configuration = Instance::ensure($config);
-        } else {
-            $this->configuration = Instance::of($config)->get();
+            $config = Instance::ensure($config);
+        } elseif (is_string($config)) {
+            $config = Instance::of($config)->get();
         }
+        return $config;
     }
 
     /**
      * load model
-     * @param bool $skipDefined
+     * @param bool $skipDefined If true, then the attributes of the set value will not be overwritten
      */
     public function loadAttributes($skipDefined = true)
     {
         /** @var Configuration $config */
-        $config = $this->getConfiguration();
+        $config = $this->configurationInit();
         $attributes = $this->getAttributes();
-
         if ($skipDefined) {
             $attributes = array_filter($attributes, function ($value) {
                 return empty($value);
             });
         }
-
         foreach ($attributes as $key => $value) {
             $this->{$key} = $config->get($this->getAttributeName($key));
         }
@@ -88,6 +83,7 @@ class StaticData extends Model
 
 
     /**
+     * save model
      * @return bool
      */
     public function save()
@@ -96,10 +92,10 @@ class StaticData extends Model
         if (!$this->validate()) {
             return false;
         }
-        /** @var Configuration $config */
-        $config = $this->getConfiguration();
-        $attributes = $this->getAttributes();
 
+        /** @var Configuration $config */
+        $config = $this->configurationInit();
+        $attributes = $this->getAttributes();
         $isSaved = true;
         foreach ($attributes as $key => $value) {
             if ($config->safeSet($this->getAttributeName($key), $value)) {
@@ -111,23 +107,36 @@ class StaticData extends Model
         return $isSaved;
     }
 
+    /**
+     * @return string get class name
+     */
     protected function getName()
     {
         $reflection = new \ReflectionClass(get_called_class());
         return $reflection->getShortName();
     }
 
+    /**
+     * @param string $attribute
+     * @return string return new attribute name. Algorithm: [ClassName][AttributeName]
+     */
     protected function getAttributeName($attribute)
     {
         $name = $this->getName();
         return $name . ucfirst($attribute);
     }
 
+    /**
+     * Before save trigger
+     */
     protected function beforeSave()
     {
         $this->trigger(self::EVENT_BEFORE_SAVE, new Event());
     }
 
+    /**
+     * after save trigger
+     */
     protected function afterSave()
     {
         $this->trigger(self::EVENT_AFTER_SAVE, new Event());
