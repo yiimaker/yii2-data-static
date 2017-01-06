@@ -30,6 +30,9 @@ Usage
 
 Example
 -------
+
+StaticData
+----------
 ```php
 class AboutUs extends ymaker\data\statics\StaticData
 {
@@ -78,4 +81,81 @@ $aboutUs->email = 'another@example.com';
 $aboutUs->reload();
 
 echo $aboutUs->email; // 'test@example.com';
+```
+
+StaticDataTranslation
+---------------------
+```php
+class AboutUs extends ymaker\data\statics\StaticDataTranslation
+{
+    public $address;
+
+    public function rules()
+    {
+        return [
+            [['address'], 'required'],
+            ['address', 'string', 'max' => 255],
+        ];
+    }
+}
+```
+
+```php
+$aboutUs = new AboutUs(['language' => 'en-US']);
+// $about
+```
+#### Save Data
+
+```php
+$aboutUs->address = 'Kiev, Ukraine';
+$aboutUs->save();
+$aboutUs->setLanguage('ru-RU');
+$aboutUs->address = 'Киев, Украина';
+$aboutUs->save();
+```
+
+#### Load Data
+
+```php
+$aboutUs->loadAttributes();
+echo $aboutUs->address; // 'Киев, Украина'
+$aboutUs->setLanguage('en-US');
+echo $aboutUs->address; // 'Kiev, Ukraine'
+```
+or
+
+```php
+$aboutUs = AboutUs::getInstance(['language' => 'en-US']);
+```
+
+#### Reload Data
+
+```php
+$aboutUs->loadAttributes();
+$aboutUs->address = 'Лондон, Великобритания';
+$aboutUs->reload();
+
+echo $aboutUs->address; // 'Киев, Украина'
+```
+#### change language
+
+```php
+    /**
+     * change language for model
+     * @param $language string language code
+     * @param bool $reload If true, then all attributes will be overwritten
+     */
+    public function changeLanguage($language, $reload = true);
+```
+
+```php
+echo $aboutUs->address; // 'Киев, Украина'
+$aboutUs->changeLanguage('en-US');
+echo $aboutUs->address; // 'Kiev, Ukraine'
+
+$aboutUs->changeLanguage('ru-RU', false);
+echo $aboutUs->address; // 'Kiev, Ukraine'
+
+$aboutUs->reload();
+echo $aboutUs->address; // 'Киев, Украина'
 ```

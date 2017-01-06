@@ -10,18 +10,28 @@ use ymaker\configuration\translation\ConfigurationTranslation;
  */
 class StaticDataTranslation extends StaticData
 {
-    public static function getDefaultLanguage()
+    private $language;
+
+    /**
+     * Return configuration
+     * @return array|string|object
+     */
+    public function getConfiguration()
+    {
+        return 'translationConfig';
+    }
+
+    /**
+     * @return string get App language
+     */
+    public static function getAppLanguage()
     {
         return \Yii::$app->language;
     }
 
-    /**
-     * @var string
-     */
-    private $language;
 
     /**
-     * @return string
+     * @return string language code
      */
     public function getLanguage()
     {
@@ -29,19 +39,35 @@ class StaticDataTranslation extends StaticData
     }
 
     /**
-     * @param string $language
+     * @param string $language language code
      */
     public function setLanguage($language)
     {
         $this->language = $language;
     }
 
+    /**
+     * change language for model
+     * @param $language string language code
+     * @param bool $reload If true, then all attributes will be overwritten
+     */
+    public function changeLanguage($language, $reload = true)
+    {
+        $this->setLanguage($language);
+        if ($reload) {
+            $this->reload();
+        }
+    }
 
+    /**
+     * load model
+     * @param bool $skipDefined If true, then the attributes of the set value will not be overwritten
+     */
     public function loadAttributes($skipDefined = true)
     {
-        $code = $this->language ?: self::getDefaultLanguage();
+        $code = $this->language ?: self::getAppLanguage();
         /** @var ConfigurationTranslation $config */
-        $config = $this->getConfiguration();
+        $config = $this->configurationInit();
         $attributes = $this->getAttributes();
         if ($skipDefined) {
             $attributes = array_filter($attributes, function ($value) {
@@ -54,30 +80,20 @@ class StaticDataTranslation extends StaticData
         }
     }
 
-    public static function getInstance($config = [])
-    {
-        $config['class'] = get_called_class();
-
-
-        /** @var StaticDataTranslation $instance */
-        $instance = \Yii::createObject($config);
-
-        $instance->loadAttributes(false);
-
-        return $instance;
-    }
-
-
+    /**
+     * save model
+     * @return bool
+     */
     public function save()
     {
         $code = $this->language;
-
         $this->beforeSave();
         if (!$this->validate()) {
             return false;
         }
+
         /** @var ConfigurationTranslation $config */
-        $config = $this->getConfiguration();
+        $config = $this->configurationInit();
         $attributes = $this->getAttributes();
 
         $isSaved = true;
