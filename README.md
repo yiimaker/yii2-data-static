@@ -119,7 +119,7 @@ $aboutUs->save();
 ```php
 $aboutUs->loadAttributes();
 echo $aboutUs->address; // 'Киев, Украина'
-$aboutUs->setLanguage('en-US');
+$aboutUs->changeLanguage('en-US');
 echo $aboutUs->address; // 'Kiev, Ukraine'
 ```
 or
