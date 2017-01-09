@@ -3,7 +3,11 @@
     "description": "Yii2 Static Data",
     "type": "yii2-extension",
     "keywords": ["yii2","extension","static data"],
-    "license": "Apache-2.0",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yiimaker/yii2-data-static/issues?state=open",
+        "source": "https://github.com/yiimaker/yii2-data-static"
+    },
     "authors": [
         {
             "name": "Ruslan Saiko",
