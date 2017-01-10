@@ -68,8 +68,14 @@ class StaticData extends Model
                 return empty($value);
             });
         }
-        foreach ($attributes as $key => $value) {
-            $this->{$key} = $config->get($this->getAttributeName($key));
+        $keys = array_keys($attributes);
+        $keyList = [];
+        foreach ($keys as $key) {
+            $keyList[$this->getAttributeName($key)] = $key;
+        }
+        $values = $config->getMultiply(array_keys($keyList));
+        foreach ($values as $key => $value) {
+            $this->{$keyList[$key]} = $value;
         }
     }
 
