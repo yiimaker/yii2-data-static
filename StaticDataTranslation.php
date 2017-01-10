@@ -74,9 +74,16 @@ class StaticDataTranslation extends StaticData
                 return empty($value);
             });
         }
+        $keys = array_keys($attributes);
 
-        foreach ($attributes as $key => $value) {
-            $this->{$key} = $config->getTranslation($this->getAttributeName($key), $code);
+        $keyList = [];
+        foreach ($keys as $key) {
+            $keyList[$this->getAttributeName($key)] = $key;
+        }
+        $values = $config->getMultiplyTranslation(array_keys($keyList), $code);
+
+        foreach ($values as $key => $value) {
+            $this->{$keyList[$key]} = $value;
         }
     }
 
